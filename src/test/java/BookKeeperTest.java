@@ -37,8 +37,12 @@ public class BookKeeperTest {
         invoiceRequest = new InvoiceRequest(new ClientData(Id.generate(),"Blab sa"));
         money = new Money(12);
         Date snapshotDate = new Date();
-        productData = new ProductData(Id.generate(), money, FOOD, snapshotDate);// Money price, String name, ProductType type, Date snapshotDate
-
+        productData = new ProductData(Id.generate(), money, "nazwa",FOOD, snapshotDate);// Money price, String name, ProductType type, Date snapshotDate
+        ProductData product= new ProductData(Id.generate(), new Money(100),"Awocado",FOOD,snapshotDate);
+        int quantity=3;
+        Money net=new Money(250);
+        Tax tax=new Tax(new Money(23),"VAT");
+        invoiceLine = new InvoiceLine(product, quantity, net, tax);
 
     }
     @Test
@@ -48,9 +52,7 @@ public class BookKeeperTest {
 
         //Invoice invoice = invoiceFactory.create(client);
         invoice.addItem(invoiceLine);
-        invoice.getItems();
-        invoice.getItems().size();
-                assertEquals(invoice.getItems().size(), 1);
+        assertEquals(invoice.getItems().size(), 1);
         //Item mockedItem = new Item("it1", "Item 1", "This is item 1", 2000, true);
         //when(itemRepository.findById("it1")).thenReturn(mockedItem);
 
