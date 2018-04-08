@@ -10,6 +10,7 @@ import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductData;
 import pl.com.bottega.ecommerce.sales.domain.productscatalog.ProductType;
 import pl.com.bottega.ecommerce.sharedkernel.Money;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -30,6 +31,7 @@ public class BookKeeperTest {
     InvoiceLine invoiceLine;
     ProductData productData;
     ProductType type;
+    Tax tax;
     @Before
     public void setUp() {
         bookKeeper = new BookKeeper(invoiceFactory);
@@ -41,7 +43,7 @@ public class BookKeeperTest {
         ProductData product= new ProductData(Id.generate(), new Money(100),"Awocado",FOOD,snapshotDate);
         int quantity=3;
         Money net=new Money(250);
-        Tax tax=new Tax(new Money(23),"VAT");
+        tax =new Tax(new Money(23),"VAT");
         invoiceLine = new InvoiceLine(product, quantity, net, tax);
 
     }
@@ -50,24 +52,16 @@ public class BookKeeperTest {
         bookKeeper = new BookKeeper(invoiceFactory);
         Invoice invoice = bookKeeper.issuance(invoiceRequest,taxPolicy);
 
-        //Invoice invoice = invoiceFactory.create(client);
         invoice.addItem(invoiceLine);
         assertEquals(invoice.getItems().size(), 1);
-        //Item mockedItem = new Item("it1", "Item 1", "This is item 1", 2000, true);
-        //when(itemRepository.findById("it1")).thenReturn(mockedItem);
-
-        //
-        // When
-        //
-        //String result = itemService.getItemNameUpperCase("it1");
-
-        //
-        // Then
-        //
-        //verify(itemRepository, times(1)).findById("it1");
-        //assertThat(result, is("ITEM 1"));
     }
+    @Test
     public void twoInvoiceTest(){
+        bookKeeper = new BookKeeper(invoiceFactory);
+        Invoice invoice = bookKeeper.issuance(invoiceRequest,taxPolicy);
 
+        invoice.addItem(invoiceLine);
+        invoice.addItem(new InvoiceLine(new ProductData(Id.generate(), new Money(0),"Awocado GRATIS",FOOD,new Date()), 1, new Money(BigDecimal.ZERO), tax));
+        assertEquals(invoice.getItems().size(), 2);
     }
 }
